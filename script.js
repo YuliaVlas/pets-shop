@@ -84,3 +84,57 @@ const items = [
     img: "./img/12.jpeg",
   },
 ];
+
+const shopItemsContainer = document.getElementById('shop-items');
+const itemTemplate = document.getElementById('item-template');
+const searchInput = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-btn');
+const nothingFoundMessage = document.getElementById('nothing-found');
+
+function displayItems(items) {
+  shopItemsContainer.innerHTML = ''; 
+  items.forEach(item => {
+      const itemElement = createItemElementByTemplate(item);
+      shopItemsContainer.appendChild(itemElement);
+  });
+}
+
+function displayTags(container, tags) {
+    tags.forEach(tag => {
+        const tagElement = document.createElement('span');
+        tagElement.classList.add('tag');
+        tagElement.textContent = tag;
+        container.appendChild(tagElement);
+    });
+}
+
+function createItemElementByTemplate(item) {
+    const itemElement = itemTemplate.content.cloneNode(true);
+
+    itemElement.querySelector('h1').textContent = item.title;
+    itemElement.querySelector('p').textContent = item.description;
+    itemElement.querySelector('img').src = item.img;
+    itemElement.querySelector('.price').textContent = `${item.price} ₽`;
+
+    const tagsContainer = itemElement.querySelector('.tags');
+    displayTags(tagsContainer, item.tags);
+
+    return itemElement;
+}
+
+function filterItems() {
+  const searchTerm = searchInput.value.trim().toLowerCase(); 
+  const filteredItems = items.filter(item => item.title.toLowerCase().includes(searchTerm)); 
+
+  displayItems(filteredItems); 
+
+  if (filteredItems.length === 0) {
+      nothingFoundMessage.textContent = "Ничего не найдено"; 
+  } else {
+      nothingFoundMessage.textContent = "";
+  }
+}
+
+displayItems(items);
+
+searchBtn.addEventListener('click', filterItems);
